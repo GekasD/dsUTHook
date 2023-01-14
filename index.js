@@ -41,7 +41,7 @@ async function main() {
         if (!config.initial) return;
     } else {
         if (lastPost.guid === latestId) {
-            console.log(`Ο τελευταίος έλεγχος δεν βρήκε νέα ανακοίνωση.`);
+            console.log('Ο τελευταίος έλεγχος δεν βρήκε νέα ανακοίνωση.');
             return;
         } else {
             latestId = lastPost.guid;
