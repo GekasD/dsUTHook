@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const cronstrue = require('cronstrue');
 const configFile = require('./config.json');
 const Parser = require('rss-parser');
+const fs = require('fs');
 
 // Ελέγχουμε αν υπάρχει webhook url
 if (!configFile.webhook_url || configFile.webhook_url === '') {
@@ -26,6 +27,13 @@ const config = {
 // Μεταβλητή που θα αποθηκέυει το τελευτάιο article id για συγρίσεις
 let latestId;
 
+// Ελέγχουμε αν υπάρχει το αρχείο "latest-id.txt", αν υπάρχει επαναφέρουμε το τελευταίο id
+const idFileName = 'latest-id.txt';
+if (fs.existsSync('./' + idFileName)) {
+    latestId = fs.readFileSync(idFileName).toString();
+    console.log(`Εντοπίστηκε υπάρχων id στο ${idFileName}: ${latestId}`);
+}
+
 // Φτιάχνουμε το rss parser object
 const parser = new Parser();
 
@@ -38,6 +46,7 @@ async function main() {
     // Ελέγχουμε αν η τελευταία ανακοίνωση είναι ίδια με την προηγούμενη
     if (!latestId) {
         latestId = lastPost.guid;
+        fs.writeFileSync(idFileName, latestId);
         if (!config.initial) return;
     } else {
         if (lastPost.guid === latestId) {
@@ -45,6 +54,7 @@ async function main() {
             return;
         } else {
             latestId = lastPost.guid;
+            fs.writeFileSync(idFileName, latestId);
             console.log(`Νεα ανακοίνωση με τίτλο: ${lastPost.title}`);
         }
     }
