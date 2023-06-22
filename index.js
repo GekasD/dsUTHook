@@ -20,7 +20,7 @@ if (configFile.cron_string && !cron.validate(configFile.cron_string)) {
 const config = {
     webhookUrl: configFile.webhook_url,
     cronString: configFile.cron_string || '*/30 * * * *',
-    initial: configFile.initial || false,
+    initial: process.argv.slice(2).includes('--initial'),
     message: configFile.message || '@everyone 🚨 Νέα ανακοίνωση απο το τμήμα ψηφιακών συστημάτων! 🚨'
 }
 
